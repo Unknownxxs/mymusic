@@ -40,6 +40,9 @@ public class musicmain extends Activity implements View.OnClickListener {
     Context context;
     List<Fruitsousuo> fruitsousuo = new ArrayList<>();
 
+
+
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
