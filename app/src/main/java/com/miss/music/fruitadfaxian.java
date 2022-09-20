@@ -35,8 +35,8 @@ public class fruitadfaxian extends ArrayAdapter<fruitfaxian> {
           text1.setText(fruit.getName().get(0));
         image2.setImageBitmap(fruit.getImage().get(1));
         text2.setText(fruit.getName().get(1));
-        image3.setImageBitmap(fruit.getImage().get(0));
-        text3.setText(fruit.getName().get(0));
+        image3.setImageBitmap(fruit.getImage().get(2));
+        text3.setText(fruit.getName().get(2));
 
 
         return view;

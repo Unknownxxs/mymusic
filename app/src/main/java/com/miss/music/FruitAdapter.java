@@ -35,7 +35,7 @@ ImageView ss=  view.findViewById(R.id.list_itemtianjia);
 
             @Override
             public void onClick(View view) {
-                Log.v("","fgyugfysa8fgsyfdsty");
+                Log.v("bugyugy","fgyugfysa8fgsyfdsty");
                 SongInfo x=new SongInfo();
                 x.setSongId(fruit.getSongid());
                 x.setSongUrl(getSongurl(fruit.getSongid()));

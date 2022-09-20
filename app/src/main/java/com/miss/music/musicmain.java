@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class musicmain extends Activity implements View.OnClickListener {
@@ -128,102 +129,14 @@ activmainxiayisou.setOnClickListener(this::onClick);
 
     }
 
-    String resuit = "";
-    String songid = "";
-    String zuozhename;
-    String imageurl = "";
-    Bitmap imagebitmap;
-    JSONArray s;
-    JSONObject json;
 
-    String name;
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sousuostrate:
-                fruitsousuo = new ArrayList<>();
-                String url = "http://42.192.226.221:3000/search?keywords=" + sousuoedit.getText().toString() + "&limit=15";
 
-                new Thread(() -> {
-
-                    try {
-                        resuit = OkGo.post(url).execute().body().string();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        json = new JSONObject(resuit);
-                        json = new JSONObject(json.getString("result"));
-                        s = json.getJSONArray("songs");
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    for (int cs = 0; cs < s.length(); cs++) {
-
-                        try {
-
-                            String[] dd = s.getString(cs).split("\"id\":");
-
-                            songid = dd[1].substring(0, dd[1].indexOf(","));
-                            name = dd[1].substring(dd[1].indexOf("name\":\"") + 7, dd[1].indexOf("\",\"artists\""));
-                            imageurl = dd[2].substring(dd[2].indexOf("img1v1Url\":\"") + 12, dd[2].indexOf("\",\"img1v1"));
-                            zuozhename = dd[2].substring(dd[2].indexOf("name\":\"") + 7, dd[2].indexOf("\",\"picUrl"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-           /*
-                    if(songid.contains("null")){continue;}
-                        if(songid.equals("0")){continue;}
-                        Log.v(songid,songid);
-                        Log.v("vvdvvv",songres[cs]);
-                        String[] v = songres[cs].split("img1v1Url\":\"");
-
-                        String[] k = v[1].split("\",\"img");
-                      imageurl = k[0];
-                      name=dd[1].split("\",\"picUrl\":")[0];
-
-*/
-
-
-                        try {
-                            try {
-                                URL url1 = new URL(imageurl);
-                                imagebitmap = BitmapFactory.decodeStream(url1.openStream());
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Fruitsousuo ee = new Fruitsousuo(imagebitmap, name, zuozhename, songid);
-                        fruitsousuo.add(ee);
-                        if (cs == 5) {
-                            runOnUiThread(() -> {
-                                FruitAdapter adapter = new FruitAdapter(context, R.layout.viewitemsousuo, fruitsousuo);
-                                //      adapter.add(ee);
-
-                                sousuolin.setAdapter(adapter);
-                            });
-                        }
-                    }
-
-
-                    //  resuit= String.valueOf(s);
-
-
-                    runOnUiThread(() -> {
-                        //listview加载
-                        FruitAdapter adapter = new FruitAdapter(context, R.layout.viewitemsousuo, fruitsousuo);
-                        //      adapter.add(ee);
-                        sousuolin.setAdapter(adapter);
-                    });
-                }).start();
-
-
+           setousuo();
                 break;
             case R.id.faxiananliu:
                 //发现
@@ -238,6 +151,7 @@ activmainxiayisou.setOnClickListener(this::onClick);
             case R.id.gerenzx:
                 //个人中心按钮
                 ViewPager.setCurrentItem(2);
+
 
                 break;
             case R.id.activmainxiayisou:
@@ -256,6 +170,92 @@ activmainxiayisou.setOnClickListener(this::onClick);
         }
     }
 
+
+    void setousuo(){
+
+        String url = "http://42.192.226.221:3000/cloudsearch?keywords=" + sousuoedit.getText().toString() + "&limit=15";
+
+        new Thread(() -> {
+
+            String resuit = "";
+            String songid = "";
+            String zuozhename = null;
+            String imageurl = "";
+            Bitmap imagebitmap = null;
+            JSONArray s=null;
+            JSONObject json=null;
+
+            String name = null;
+            fruitsousuo = new ArrayList<>();
+            try {
+                resuit = OkGo.post(url).execute().body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                json = new JSONObject(resuit);
+                json = new JSONObject(json.getString("result"));
+                s = json.getJSONArray("songs");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            for (int cs = 0; cs < s.length()-1; cs++) {
+
+                try {
+
+                    String[] dd = s.getString(cs).split("\"id\":");
+
+                    songid = dd[1].substring(0, dd[1].indexOf(","));
+                    name = dd[0].substring(dd[0].indexOf("name\":\"") + 7, dd[0].indexOf("\","));
+
+                    imageurl = dd[3].substring(dd[3].indexOf("picUrl\":\"") + 9, dd[3].indexOf("\",\"tn"))+"?param=60y60";
+                    Log.v("xxxxxxxxxxxxx",  imageurl);
+                    zuozhename = dd[2].substring(dd[2].indexOf("name\":\"") + 7, dd[2].indexOf("\",\"tns\":"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    try {
+                        URL url1 = new URL(imageurl);
+                        Log.v("ccv",imageurl);
+                        imagebitmap = BitmapFactory.decodeStream(url1.openStream());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Fruitsousuo ee = new Fruitsousuo(imagebitmap, name, zuozhename, songid);
+                fruitsousuo.add(ee);
+                if (cs == 4) {
+                    runOnUiThread(() -> {
+                        FruitAdapter adapter = new FruitAdapter(context, R.layout.viewitemsousuo, fruitsousuo);
+                        //      adapter.add(ee);
+                        sousuolin.setAdapter(adapter);
+                    });
+                }
+                if (cs == 7) {
+                    runOnUiThread(() -> {
+                        FruitAdapter adapter = new FruitAdapter(context, R.layout.viewitemsousuo, fruitsousuo);
+                        //      adapter.add(ee);
+                        sousuolin.setAdapter(adapter);
+                    });
+                }
+            }
+            runOnUiThread(() -> {
+                //listview加载
+                FruitAdapter adapter = new FruitAdapter(context, R.layout.viewitemsousuo, fruitsousuo);
+                //      adapter.add(ee);
+                sousuolin.setAdapter(adapter);
+            });
+        }).start();
+
+
+    }
+    String resuit="";
     public String getSongurl(String songid) {
 
         Thread xs = new Thread(() -> {
@@ -295,8 +295,8 @@ activmainxiayisou.setOnClickListener(this::onClick);
        StarrySky.with().playMusicById(songid);
       // StarrySky.with().skipToNext();
 runOnUiThread(()->{
-    imagezhuye.setImageBitmap(imagebitmap);
-    mainnametext.setText(name+"     "+artist);});
+    imagezhuye.setImageBitmap(image);
+    mainnametext.setText(name+"    "+artist);});
 StarrySky.setIsOpenNotification(true);
 
 
@@ -314,7 +314,7 @@ StarrySky.setIsOpenNotification(true);
             JSONObject json;
 List<fruitfaxian> fruitf=new ArrayList<>();
             try {
-              result=  OkGo.get("http://42.192.226.221:3000/top/playlist?limit=20").execute().body().string();
+              result=  OkGo.get("http://42.192.226.221:3000/top/playlist?limit=20&timestamp="+new Date().getTime()).execute().body().string();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -341,7 +341,7 @@ List<fruitfaxian> fruitf=new ArrayList<>();
                     throw new RuntimeException(e);
                 }
                 name=reason.substring(reason.indexOf("name\":\"")+7,reason.indexOf("\",\"id\":"));
-                bitmapurl=reason.substring(reason.indexOf("\"coverImgUrl\":\"")+15,reason.indexOf("\",\"coverImgId"));
+                bitmapurl=reason.substring(reason.indexOf("\"coverImgUrl\":\"")+15,reason.indexOf("\",\"coverImgId"))+"?param=100y100";
 idd=reason.substring(reason.indexOf("\"id\":")+5,reason.indexOf(",\"trackNum"));
 
                 try {

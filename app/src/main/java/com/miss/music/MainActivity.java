@@ -10,6 +10,8 @@ import com.lzx.starrysky.StarrySky;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.MemoryCookieStore;
+import com.lzy.okgo.cookie.store.SPCookieStore;
+
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.cookieJar(new CookieJarImpl(new MemoryCookieStore()));
+        builder.cookieJar(new CookieJarImpl(new SPCookieStore(this)));
         OkGo.getInstance().init(getApplication()).setOkHttpClient(builder.build());
         StarrySky.init(getApplication()).apply();
         StarrySky.setIsOpenNotification(true);
@@ -32,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                   try {
+                /*   try {
                         Log.v(":" ,OkGo.get("http://42.192.226.221:3000/login/cellphone?phone=18880856725&password=x12345678").execute().body().string());
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {}
