@@ -34,11 +34,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                /*   try {
-                        Log.v(":" ,OkGo.get("http://42.192.226.221:3000/login/cellphone?phone=18880856725&password=x12345678").execute().body().string());
+                  try {
+                        Log.v(":,," ,OkGo.get("http://42.192.226.221:3000//register/anonimous").execute().body().string());
+
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {}

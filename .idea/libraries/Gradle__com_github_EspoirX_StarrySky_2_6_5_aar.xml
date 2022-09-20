@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.EspoirX:StarrySky:2.6.5@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/03b56b586bd29c17e70e067c04f1db5d/transformed/jetified-StarrySky-2.6.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/03b56b586bd29c17e70e067c04f1db5d/transformed/jetified-StarrySky-2.6.5/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/03b56b586bd29c17e70e067c04f1db5d/transformed/jetified-StarrySky-2.6.5/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.EspoirX/StarrySky/2.6.5/fda922aee36bb39388ca62aa6073d0b5a0d34023/StarrySky-2.6.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

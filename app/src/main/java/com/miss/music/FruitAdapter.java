@@ -1,6 +1,8 @@
 package com.miss.music;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +18,12 @@ import com.lzx.starrysky.StarrySky;
 import com.lzy.okgo.OkGo;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class FruitAdapter extends ArrayAdapter<Fruitsousuo> {
+
     public FruitAdapter(@NonNull Context context, int resource,  @NonNull List<Fruitsousuo> objects) {
         super(context, resource, objects);
     }
@@ -31,6 +36,7 @@ public class FruitAdapter extends ArrayAdapter<Fruitsousuo> {
         Fruitsousuo fruit=getItem(position);
       View view=  LayoutInflater.from(getContext()).inflate(R.layout.viewitemsousuo,null);
 ImageView ss=  view.findViewById(R.id.list_itemtianjia);
+
    ss.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -47,9 +53,33 @@ ImageView ss=  view.findViewById(R.id.list_itemtianjia);
         TextView name=view.findViewById(R.id.list_itemtextmingchen);
         TextView gesou=view.findViewById(R.id.list_textgesou);
         ss.setImageResource(R.drawable.tianjai);
-        image.setImageBitmap(fruit.getImage());
+       // image.setImageBitmap(fruit.getImage());
 name.setText(fruit.getName());
 gesou.setText(fruit.getgesou());
+
+   Thread s= new Thread(()->{
+
+    try {
+        try {
+            Bitmap sc=null;
+            URL url1 = new URL(fruit.getImage());
+            Log.v("ccv",fruit.getImage());
+       sc  = BitmapFactory.decodeStream(url1.openStream());
+
+            Bitmap finalSc = sc;
+            image.post(()->{image.setImageBitmap(finalSc);});
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+
+});
+s.start();
+
+
         return view;
 
 

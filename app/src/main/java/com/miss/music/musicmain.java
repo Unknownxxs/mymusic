@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class musicmain extends Activity implements View.OnClickListener {
 
@@ -119,7 +120,7 @@ activmainxiayisou.setOnClickListener(this::onClick);
                 Fruitsousuo fruit = fruitsousuo.get(position);
                 String v=getSongurl(fruit.getSongid());
                 Log.v("xxxxx",v);
-        playsongs(v ,fruit.getSongid(),fruit.getName(),fruit.getgesou(),fruit.getImage());
+        playsongs(v ,fruit.getSongid(),fruit.getName(),fruit.getgesou(),getbitmap(fruit.getImage()));
 
 
 
@@ -175,13 +176,11 @@ activmainxiayisou.setOnClickListener(this::onClick);
 
         String url = "http://42.192.226.221:3000/cloudsearch?keywords=" + sousuoedit.getText().toString() + "&limit=15";
 
+
         new Thread(() -> {
 
             String resuit = "";
-            String songid = "";
-            String zuozhename = null;
-            String imageurl = "";
-            Bitmap imagebitmap = null;
+
             JSONArray s=null;
             JSONObject json=null;
 
@@ -189,6 +188,7 @@ activmainxiayisou.setOnClickListener(this::onClick);
             fruitsousuo = new ArrayList<>();
             try {
                 resuit = OkGo.post(url).execute().body().string();
+                Log.v("urllll",resuit);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -203,32 +203,28 @@ activmainxiayisou.setOnClickListener(this::onClick);
             }
 
             for (int cs = 0; cs < s.length()-1; cs++) {
+                String songid = "";
+                String zuozhename = null;
+                String imageurl = "";
+                Bitmap imagebitmap = null;
 
                 try {
+
 
                     String[] dd = s.getString(cs).split("\"id\":");
 
                     songid = dd[1].substring(0, dd[1].indexOf(","));
                     name = dd[0].substring(dd[0].indexOf("name\":\"") + 7, dd[0].indexOf("\","));
 
-                    imageurl = dd[3].substring(dd[3].indexOf("picUrl\":\"") + 9, dd[3].indexOf("\",\"tn"))+"?param=60y60";
-                    Log.v("xxxxxxxxxxxxx",  imageurl);
+                    imageurl = s.getString(cs).substring(s.getString(cs).indexOf("picUrl\":\"") + 9, s.getString(cs).indexOf("jpg\"") + 3) + "?param=70y70";
+                    Log.v("xxxxxxxxxxxxx", imageurl);
                     zuozhename = dd[2].substring(dd[2].indexOf("name\":\"") + 7, dd[2].indexOf("\",\"tns\":"));
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    throw new StringIndexOutOfBoundsException();
                 }
-                try {
-                    try {
-                        URL url1 = new URL(imageurl);
-                        Log.v("ccv",imageurl);
-                        imagebitmap = BitmapFactory.decodeStream(url1.openStream());
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Fruitsousuo ee = new Fruitsousuo(imagebitmap, name, zuozhename, songid);
+
+
+                Fruitsousuo ee = new Fruitsousuo(imageurl, name, zuozhename, songid);
                 fruitsousuo.add(ee);
                 if (cs == 4) {
                     runOnUiThread(() -> {
@@ -291,6 +287,7 @@ activmainxiayisou.setOnClickListener(this::onClick);
        s.setSongName(name);
        s.setSongId(songid);
        s.setArtist(artist);
+       s.setCoverBitmap(image);
        StarrySky.with().addSongInfo(s);
        StarrySky.with().playMusicById(songid);
       // StarrySky.with().skipToNext();
@@ -380,6 +377,40 @@ idd=reason.substring(reason.indexOf("\"id\":")+5,reason.indexOf(",\"trackNum"));
 
         }).start();
 
+
+    }
+    Bitmap getbitmap(String bit) {
+        List<Bitmap> sc = new ArrayList<>();
+        Thread s= new Thread(()->{
+Bitmap d=null;
+            try {
+                try {
+
+                    URL url1 = new URL(bit);
+                    Log.v("ccv", bit);
+                    d = BitmapFactory.decodeStream(url1.openStream());
+
+                    Bitmap finalSc = d;
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sc.add(d);
+        });
+s.start();
+        try {
+            s.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Bitmap dd=null;
+        if(sc.size()>0) {
+            dd = sc.get(0);
+        }
+        return dd;
 
     }
 }
